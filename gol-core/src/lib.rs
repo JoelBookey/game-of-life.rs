@@ -1,10 +1,9 @@
 use std::fmt::Error;
 
-pub const GAME_WIDTH: usize = 30;
-pub const GAME_HEIGHT: usize = 30;
+pub const GAME_SIZE: usize = 40;
 
 pub struct Game {
-    grid: [[bool; GAME_WIDTH]; GAME_HEIGHT],
+    grid: [[bool; GAME_SIZE]; GAME_SIZE],
     pub ticks: u32,
 }
 
@@ -14,7 +13,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         Game {
-            grid: [[false; GAME_WIDTH]; GAME_HEIGHT],
+            grid: [[false; GAME_SIZE]; GAME_SIZE],
             ticks: 0,
         }
     }
@@ -25,7 +24,10 @@ impl Game {
         }
         Err(Error)
     }
-
+    pub fn reset(&mut self) {
+        self.ticks = 0;
+        self.grid = [[false; GAME_SIZE]; GAME_SIZE];
+    }
     pub fn tick(&mut self) {
         self.ticks += 1;
         let mut changed: Vec<(usize, usize)> = Vec::new();
@@ -46,16 +48,16 @@ impl Game {
         }
     }
 
-    pub fn show(&self) -> [[bool; GAME_WIDTH]; GAME_HEIGHT] {
+    pub fn show(&self) -> [[bool; GAME_SIZE]; GAME_SIZE] {
         self.grid
     }
 
     // x, y
     fn check_neighbours(&self, point: (usize, usize)) -> u8 {
-        let cell_behind: isize = point.0 as isize - 1;
-        let cell_ahead: isize = point.0 as isize + 1;
-        let row_behind: isize = point.1 as isize - 1;
-        let row_ahead: isize = point.1 as isize + 1;
+        let cell_behind = point.0 as isize - 1;
+        let cell_ahead = point.0 as isize + 1;
+        let row_behind = point.1 as isize - 1;
+        let row_ahead = point.1 as isize + 1;
 
         let mut n: u8 = 0;
         if self.check_state((cell_behind, row_behind)) {
@@ -97,5 +99,5 @@ impl Game {
 }
 
 fn valid_point(point: &(isize, isize)) -> bool {
-    point.0 >= 0 && point.1 >= 0 && point.0 < GAME_WIDTH as isize && point.1 < GAME_HEIGHT as isize
+    point.0 >= 0 && point.1 >= 0 && point.0 < GAME_SIZE as isize && point.1 < GAME_SIZE as isize
 }
